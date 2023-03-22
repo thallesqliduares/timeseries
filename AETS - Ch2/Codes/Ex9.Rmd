@@ -1,0 +1,76 @@
+---
+title: "Applied Econometric Time Series - W.Enders - Ch2 - Ex9"
+author: "Thalles Quinaglia Liduares"
+output: html_document
+---
+
+```{r, include=FALSE}
+
+setwd("C:\\Users\\thalles.l\\Desktop\\Data")
+
+```
+
+The second column in file SIM_2.xls contains the 100 values of the simulated ARMA(1, 1) process used in Section 7. This series is entitled Y2. Use this series to perform the following tasks (Note: Due to differences in data handling and rounding, your answers need only approximate those presented here.)
+
+a. Plot the sequence against time. Does the series appear to be stationary? Plot the ACF.
+Load packages
+
+```{r}
+library(readxl)
+```
+
+Load data
+
+```{r}
+data<-readxl::read_xlsx("C:\\Users\\thalles.l\\Desktop\\Data\\Sim.xlsx")
+```
+
+Define variable
+
+```{r}
+y2 <- data$Y2
+plot(y2, type = "l", xlab = "Time", ylab = "Y2")
+```
+ACF 
+```{r}
+acf(y2, lag.max = 20)
+```
+
+The ACF shows a strong correlation at the first lag, which is expected for an ARMA(1,1) process. The correlation decreases quickly for higher lags, indicating that the process may be well-approximated by an AR(1) model.
+
+b)  Estimate the process using a pure MA(2) model.
+
+```{r}
+fit_ma <- arima(data$Y2, order=c(0,0,2))
+```
+
+```{r}
+fit_ma$coef
+```
+
+d. Compare the MA(2) to the ARMA(1, 1).
+
+Fit ARMA(1,1) model
+```{r}
+
+fit_arma <- arima(data$Y2, order=c(1,0,1))
+```
+
+
+Calculate AIC and BIC for MA(2) and ARMA(1,1) models
+
+```{r}
+# 
+AIC_ma <- AIC(fit_ma)
+AIC_arma <- AIC(fit_arma)
+BIC_ma <- BIC(fit_ma)
+BIC_arma <- BIC(fit_arma)
+```
+Print AIC and BIC values
+```{r}
+# 
+cat("MA(2) model: AIC =", AIC_ma, ", BIC =", BIC_ma, "\n")
+cat("ARMA(1,1) model: AIC =", AIC_arma, ", BIC =", BIC_arma, "\n")
+```
+
+Based on the AIC and BIC values, we can see that the MA(2) model has a slightly lower AIC and BIC than the ARMA(1,1) model. Therefore, the MA(2) model is preferred over the ARMA(1,1) model.
